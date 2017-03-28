@@ -1,0 +1,497 @@
+<!doctype html> 
+
+<html lang="en">
+
+<head>
+ 
+    <meta charset="UTF-8" />
+
+     <title>Phaser - Making your first game, part 2</title>
+ 
+    <script type="text/javascript" src="js/phaser.min.js"></script>
+
+     <style type="text/css">
+
+        body {
+
+            margin: 0;
+
+        }
+
+     </style>
+
+</head>
+
+<body>
+
+
+
+<script type="text/javascript">
+
+
+
+
+
+var w = 800;
+
+var h = 600;
+
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'display_game', { preload: preload, create: create, update: update });
+
+var player1, keyboard;
+
+var can, cans, enemy, platform, enemy1, bg1, track1, score, gameover, bg;
+
+
+
+function preload() {
+
+    game.load.spritesheet('bg','img/bgg.png',1024,600);
+
+    game.load.spritesheet('can', 'img/lata.png',80,80);
+
+    game.load.spritesheet('player', 'img/imagess.png',61,83);
+
+    game.load.spritesheet('enemy', 'img/enemy.png',35,48);
+
+    game.load.image('track', 'img/bomb.png');
+
+    game.load.image('platform','img/platform1.png');
+
+
+
+}
+
+function create() {
+
+
+    game.physics.startSystem(Phaser.Physics.ARCADE);
+
+    bg1 = game.add.sprite(0,0,'bg');
+
+    cans = game.add.sprite(800,150,'can');
+
+    player1 = game.add.sprite(200,0,'player');
+
+    enemy1 = game.add.sprite(800,200,'enemy');
+
+    track1 = game.add.image(800,200,'track');
+
+    platform = game.add.image(0,597,'platform');
+    
+
+
+	
+   // game.world.setBounds(0,0,2800,600);
+
+    //game.camera.follow(player1);
+
+
+
+
+   player1.animations.add('walk-right',[0,1,2],10,true);
+
+   player1.animations.add('walk-up',[12,13,13,13],5,true);
+
+   player1.animations.add('walk-left',[3,4,5],10,true);
+
+   player1.animations.add('walk-down',[3,],10,true);
+
+   bg1.animations.add('background',[0,1,2,1],2,true);
+
+
+
+   //keyboard = game.input.keyboard.createCursorKeys();
+
+
+
+   game.physics.arcade.enable(player1);
+ 
+   player1.body.collideWorldBounds = true;
+ 
+   player1.enableBody = true;
+
+ 
+
+   game.physics.arcade.enable(bg1);
+ 
+   bg1.enableBody = true;
+
+
+ 
+
+
+   game.physics.arcade.enable(cans);
+ 
+   can = game.add.group();
+ 
+   can.enableBody = true;
+
+ 
+ 
+   game.physics.arcade.enable(track1);
+ 
+   track = game.add.group();
+   
+   track.enableBody = true;
+    
+
+
+   game.physics.arcade.enable(enemy1);
+ 
+   enemy = game.add.group();
+  
+   enemy.enableBody = true;
+
+ 
+
+   game.physics.arcade.enable(platform);
+   
+   //platform.body.collideWorldBounds = true;
+
+  
+ 
+   //platform.body.immovable = true;
+
+ 
+
+   keyboard = game.input.keyboard;
+  
+   cursors= game.input.keyboard.createCursorKeys();
+
+
+   
+
+
+   // player.body.collideWorldBounds = true;
+  
+   // player.body.gravity.y = 1000;
+   
+   //player.body.bounce.y = .5
+   
+   //player.scale.y = 1.5;
+
+  
+
+   //player.body.gravity.y = 1000;
+   
+   //player.body.bounce.y = .5
+   
+   //player.scale.y = 1.5;
+ 
+   // player1.body.collideWorldBounds = true;
+
+ 
+
+   // game.physics.arcade.enable(enemy);
+ 
+  //  enemy1.body.collideWorldBounds = true;
+
+
+
+
+   createcans(1000);
+
+   createenemy1(1000);
+ 
+   createtrack1(1000);
+ 
+   //playform(1000);
+
+ 
+
+   player1.body.collideWorldBounds = true;
+ 
+   player1.body.gravity.y = 1000;
+
+   // player1.body.bounce.y = .5
+ 
+   // player1.scale.y = 1.5;
+
+ 
+
+   score = game.add.text(550,10,'Score: ');
+
+   //scoreText.fixedToCamera = true;
+
+
+
+
+
+   }
+
+
+
+// var x = 0;
+
+function update() {
+
+ 
+   game.physics.arcade.collide(player1,enemy,killplayer);
+ 
+   game.physics.arcade.collide(player1,track,killtrack);
+ 
+   game.physics.arcade.collide(player1,platform);
+ 
+   game.physics.arcade.overlap(player1,can,killcan);
+
+   //game.physics.arcade.overlap(player1,platform,playform);
+
+
+
+ 
+
+  if(cursors.right.isDown){
+ 
+   player1.body.velocity.x= 800;
+ 
+   player1.animations.play('walk-right');
+  
+   game.camera.x += 4;
+
+
+
+}
+  
+   else{
+ 
+   player1.body.velocity.x=0;
+ 
+   // game.camera.x = 0;
+
+
+
+   }
+ 
+   if(cursors.left.isDown){
+  
+       // x++;
+ 
+       player1.body.velocity.x = -800;
+  
+       player1.animations.play("walk-left");
+  
+       //game.camera.x += -4;
+ 
+       // bg.frame = 0;
+
+   }
+
+   // else if(cursors.right.isDown){
+
+   //     // x--;
+ 
+   //     // bg.frame = 1;
+
+   //     player.animations.play("walk-right");
+
+   //     player.body.velocity.x = 400;
+   // }
+ 
+
+  
+ if(cursors.up.isDown){
+
+   player1.body.velocity.y = -1000;
+
+   player1.animations.play('walk-up');
+ 
+   }
+  
+    else{
+ 
+    player1.body.velocity.y=1000;
+
+    player1.animations.play('walk-right'); 
+ 
+  }
+
+ 
+
+   if(cursors.down.isDown){
+ 
+   player1.body.velocity.y = 1000;
+ 
+   player1.animations.play('walk-down');
+ 
+   }
+
+ 
+
+   // if(cursors.right.isDown){
+  
+   //bg1.body.velocity.x= 800;
+  
+   // bg1.animations.play('background');
+ 
+   //game.camera.x += 4;
+
+
+
+//}
+
+   // else{
+ 
+   bg1.animations.play('background');
+ 
+   // game.camera.x = 0;
+
+ 
+
+   //}
+ 
+   // player1.animations.play('walk-right');
+  
+
+   }
+ 
+   // if{
+  
+   //     // player.body.velocity.x = 0s;
+ 
+   //     player.animations.stop();
+ 
+   // }
+
+ 
+
+   // if(cursors.up.isDown && player1.body.touching.down){
+ 
+   //     player1.body.velocity.y = -1000;
+ 
+   // }
+ 
+
+  
+ //if(keyboard.isDown(Phaser.Keyboard.SPACEBAR)&& player1.body.touching.down ){
+ 
+   // player1.body.velocity.y = -400;
+//}
+
+//}
+   
+
+   // for(x=0; x<2.5; x++){
+
+//}
+ 
+      function createcans(time){
+  
+          setInterval(function(){
+       
+               cans = can.create(800,520,"can");
+     
+               cans.body.gravity. x = -800;
+        
+               var scale = Math.random();
+     
+               //cans.scale.x = scale*10;
+       
+               //cans.scale.y = scale*10;
+      
+               //can.body.collideWorldBounds= true;
+    
+      },1000)
+    
+   } 
+      
+
+   var a = 0;
+   
+   function killcan(player1,cans){
+    
+            a = a + 5;
+       
+            cans.kill();
+     
+            score.text = "Score: "+a;
+  
+   }
+  
+      function createenemy1(time){
+   
+          setInterval(function(){
+    
+               enemy1 = enemy.create(800,540,"enemy");
+    
+               enemy1.body.gravity. x = -800;
+   
+               var scale = Math.random();
+        
+               //cans.scale.x = scale*10;
+        
+               //cans.scale.y = scale*10;
+        
+               //can.body.collideWorldBounds= true;
+   
+      },5000)
+  
+   }
+     
+   function killplayer(player1,enemy1){
+       
+       // a = a + 1;
+         
+       player1.kill();
+       
+       // score.text = "Score: "+a;
+         
+       if(player1.kill){
+         
+       gameover = game.add.text(300,400, 'Game Over',{ fontSize: '200px', fill: '#AAAA' });
+       
+       game._paused=true;
+ 
+   }
+    
+      } 
+     
+   function createtrack1(time){
+    
+       setInterval(function(){
+          
+            track1 = track.create(800,450,"track");
+   
+            track1.body.gravity. x = -800;
+        
+            var scale = Math.random();
+          
+            //cans.scale.x = scale*10;
+    
+            //cans.scale.y = scale*10;
+    
+            //can.body.collideWorldBounds= true;
+  
+      },6000)
+ 
+   }
+     
+   function killtrack(player1,track1){
+  
+       // a = a + 1;
+     
+       player1.kill();
+  
+       // score.text = "Score: "+a;
+       
+       if(player1.kill){
+   
+       gameover = game.add.text(300,400, 'Game Over',{ fontSize: '200px', fill: '#AAAA' });
+       
+       game._paused=true;
+ 
+   }
+ 
+
+
+   }
+  
+
+
+</script>
+
+
+
+</body>
+
+</html>
